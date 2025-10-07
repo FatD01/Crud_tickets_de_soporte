@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Eliminación</title>
+    <style>
+        /* Paleta */
+        :root {
+            --color-black: #1a1a1a;
+            --color-gray-bg: #f4f4f4;
+            --color-white: white;
+            --color-pink-subtle: #A36A78; 
+            --color-pink-hover: #8F5B6A;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-gray-bg);
+            color: var(--color-black);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh; /* Centra el contenido verticalmente */
+        }
+
+        .container {
+            background-color: var(--color-white);
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            border-top: 5px solid var(--color-pink-subtle); 
+        }
+
+        h1 {
+            color: var(--color-black);
+            font-weight: 600;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilo  Advertencia pues */
+        .warning-box {
+            background-color: #fff0f3; 
+            border: 1px solid var(--color-pink-subtle);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: var(--color-black);
+        }
+
+        .category-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 15px 0;
+        }
+        
+       
+        button[type="submit"] {
+            background-color: var(--color-pink-subtle);
+            color: var(--color-white); 
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-top: 25px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: var(--color-pink-hover);
+        }
+
+        /* Enlace de Cancelar */
+        .cancel-link {
+            display: inline-block;
+            color: var(--color-black);
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 15px;
+            transition: background-color 0.2s;
+        }
+        
+        .cancel-link:hover {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>&#9888; Confirmar Eliminación</h1>
+        
+        <div class="warning-box">
+            <p>¡ADVERTENCIA! Esta acción no se puede deshacer.</p>
+            <p>Al eliminar esta categoría, los tickets asociados <b>perderán su asignación</b> (pasarán a NULL).</p>
+        </div>
+        
+        <p>¿Estás seguro de eliminar la categoría:</p>
+        
+        <p class="category-name">"{{ object.nombre }}"</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">
+                &#128465; Sí, Eliminar Categoría
+            </button>
+            <a href="{% url 'categoria_list' %}" class="cancel-link">
+                &#8592; No, Cancelar
+            </a>
+        </form>
+    </div>
+</body>
+</html>

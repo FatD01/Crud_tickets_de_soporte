@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Eliminación</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .warning { color: red; font-weight: bold; }
+        button { background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        a { text-decoration: none; margin-left: 15px; }
+    </style>
+</head>
+<body>
+    <h1>¡¡!!! Confirmar Eliminación de Ticket</h1>
+    
+    <p>¿Estás ABSOLUTAMENTE SEGURO de que deseas eliminar el siguiente ticket?</p>
+    
+    <div style="border: 1px solid #f44336; padding: 15px; background-color: #ffebee;">
+        <span class="warning">Título:</span> {{ object.titulo }} <br>
+        <span class="warning">ID:</span> #{{ object.id }}
+    </div>
+
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <button type="submit">Sí, Eliminar Permanentemente</button>
+        <a href="{% url 'ticket_detail' object.pk %}">No, Cancelar</a>
+    </form>
+</body>
+</html>

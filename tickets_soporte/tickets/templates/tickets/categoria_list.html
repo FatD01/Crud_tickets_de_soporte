@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Categorías</title>
+    <style>
+        /* Paleta consistente */
+        :root {
+            --color-black: #1a1a1a;
+            --color-gray-bg: #f4f4f4;
+            --color-white: white;
+            --color-pink-subtle: #A36A78; 
+            --color-pink-hover: #8F5B6A;
+            
+            --color-action-edit: #888;
+            --color-action-delete: var(--color-pink-subtle);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-gray-bg);
+            color: var(--color-black);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-content {
+            background-color: var(--color-white);
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: var(--color-black);
+            border-bottom: 3px solid var(--color-pink-subtle); 
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Bloque de navegación (Crear / Volver a Tickets) */
+        .navigation-links {
+            margin-bottom: 20px;
+        }
+        .navigation-links a {
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-right: 15px;
+            display: inline-block;
+            color: var(--color-white);
+        }
+
+        .navigation-links .create { 
+            background-color: var(--color-pink-subtle); 
+        }
+        .navigation-links .create:hover { background-color: var(--color-pink-hover); }
+
+        .navigation-links .home {
+            background-color: var(--color-black); 
+        }
+        .navigation-links .home:hover { opacity: 0.8; }
+        
+        /* Contenedor de cada Categoría */
+        .category-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 0;
+            border-bottom: 1px solid #eee; /* Línea de división sutil */
+            transition: background-color 0.2s;
+        }
+
+        .category-item:hover {
+            background-color: var(--color-gray-bg);
+        }
+
+        .category-details {
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+        }
+
+        .category-icon {
+            margin-right: 15px;
+            /* Estilo para la imagen (ajustado para iconos pequeños) */
+            width: 30px; 
+            height: 30px; 
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+        }
+        .category-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Mantiene la proporción del icono sin recortar */
+        }
+        
+        .status-inactive {
+            color: var(--color-pink-subtle);
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-left: 10px;
+            padding: 3px 6px;
+            border: 1px solid var(--color-pink-subtle);
+            border-radius: 3px;
+        }
+
+        /* Estilo de las Acciones (Editar/Eliminar) */
+        .category-actions a { 
+            margin-left: 10px; 
+            text-decoration: none; 
+            padding: 8px 12px; 
+            border-radius: 4px; 
+            font-size: 0.85em; 
+            font-weight: bold;
+            transition: opacity 0.3s;
+            color: var(--color-white);
+            display: inline-block;
+        }
+        .category-actions a:hover { opacity: 0.8; }
+        
+        .category-actions .edit { background-color: var(--color-action-edit); }
+        .category-actions .delete { background-color: var(--color-action-delete); }
+        
+        /* Estilo para los SVG y Símbolos */
+        .category-actions svg {
+            vertical-align: middle; 
+            margin-right: 5px;
+            fill: var(--color-white); /* Asegura que el SVG sea blanco */
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1>Administración de Categorías</h1>
+        
+        <div class="navigation-links">
+            <a href="{% url 'categoria_create' %}" class="create">&#10133; Crear Nueva Categoría</a> 
+            <a href="{% url 'ticket_list' %}" class="home">&#8592; Ir a Tickets</a>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 25px 0 10px 0;">
+
+        {% for categoria in categorias %}
+            <div class="category-item">
+                <div class="category-details">
+                    <div class="category-icon">
+                        {% if categoria.icono %}
+                            <img src="{{ categoria.icono.url }}" alt="{{ categoria.nombre }}">
+                        {% else %}
+                            <span style="font-size: 1.2em; color: #555;">&#9733;</span> 
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <strong>{{ categoria.nombre }}</strong> ({{ categoria.propiedad }}) 
+                        {% if not categoria.activa %}
+                            <span class="status-inactive">[INACTIVA]</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="category-actions">
+                    <a href="{% url 'categoria_update' categoria.pk %}" class="edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M15.5 2a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V1a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5zM14.707 6.354a.5.5 0 0 1 0 .708L7.354 14.707a.5.5 0 0 1-.354.146H2.5a.5.5 0 0 1-.5-.5V9.707a.5.5 0 0 1 .146-.354l7.353-7.353a.5.5 0 0 1 .708 0l4.354 4.354zM7.5 13.06l-4 4V13.5a.5.5 0 0 1 .5-.5h2.5L7.5 13.06zM13.5 6.5l-4-4L14 2.5l4 4z"/>
+                        </svg>
+                        Editar
+                    </a>
+                    
+                    <a href="{% url 'categoria_delete' categoria.pk %}" class="delete">
+                        &#128465; Eliminar
+                    </a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center; color: #888; padding: 20px;">No hay categorías registradas. Comienza creando una.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

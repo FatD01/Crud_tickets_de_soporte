@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Ticket #{{ ticket.id }}</title>
+    <style>
+        /* Paleta consistente */
+        :root {
+            --color-black: #1a1a1a;
+            --color-gray-bg: #f4f4f4;
+            --color-white: white;
+            --color-pink-subtle: #A36A78; 
+            --color-pink-hover: #8F5B6A;
+            
+            --color-action-edit: #888;
+            --color-action-back: #555;
+
+            --color-status-open: #38761d;
+            --color-status-process: #e69138;
+            --color-status-closed: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-gray-bg);
+            color: var(--color-black);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: var(--color-white);
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--color-black);
+            /* Barra rosa apagada */
+            border-bottom: 3px solid var(--color-pink-subtle); 
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 1.2em;
+            margin-top: 30px;
+            border-left: 5px solid var(--color-pink-subtle);
+            padding-left: 10px;
+        }
+
+        /* Estilo del Estado */
+        .status {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-left: 15px;
+            color: var(--color-white);
+        }
+
+        .status.ABIERTO { background-color: var(--color-status-open); }
+        .status.PROCESO { background-color: var(--color-status-process); }
+        .status.CERRADO { background-color: var(--color-status-closed); }
+
+        .evidence-block {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .evidence-block img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto 0 auto; /* Centrar imagen */
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+     
+        .actions-bar {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .actions-bar a {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            color: var(--color-white);
+            display: inline-block;
+        }
+        
+        .actions-bar .edit { background-color: var(--color-action-edit); }
+        .actions-bar .delete { background-color: var(--color-pink-subtle); }
+        .actions-bar .back { background-color: var(--color-action-back); }
+        
+        .actions-bar a:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            Ticket #{{ ticket.id }} - {{ ticket.titulo }}
+            <span class="status {{ ticket.estado }}">{{ ticket.get_estado_display }}</span>
+        </h1>
+
+        <p><strong>Categoría:</strong> {{ ticket.categoria.nombre|default:"N/A" }}</p>
+        <p><strong>Creado el:</strong> {{ ticket.fecha_creacion|date:"Y-m-d H:i" }}</p>
+        
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 25px 0;">
+        
+        <h2>Detalle del Problema</h2>
+        <p style="white-space: pre-wrap;">{{ ticket.descripcion }}</p>
+
+        {% if ticket.adjunto %}
+            <div class="evidence-block">
+                <h2>🖼️ Evidencia Adjunta</h2>
+                <img src="{{ ticket.adjunto.url }}" alt="Evidencia del ticket">
+            </div>
+        {% else %}
+            <p style="color: #888; margin-top: 30px;">No se adjuntó evidencia a este ticket.</p>
+        {% endif %}
+
+        <div class="actions-bar">
+            <a href="{% url 'ticket_update' ticket.pk %}" class="edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 5px;">
+                  <path d="M15.5 2a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V1a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5zM14.707 6.354a.5.5 0 0 1 0 .708L7.354 14.707a.5.5 0 0 1-.354.146H2.5a.5.5 0 0 1-.5-.5V9.707a.5.5 0 0 1 .146-.354l7.353-7.353a.5.5 0 0 1 .708 0l4.354 4.354zM7.5 13.06l-4 4V13.5a.5.5 0 0 1 .5-.5h2.5L7.5 13.06zM13.5 6.5l-4-4L14 2.5l4 4z"/>
+                </svg>
+                Editar Ticket
+            </a>
+            
+            <a href="{% url 'ticket_delete' ticket.pk %}" class="delete">
+                &#128465; Eliminar Ticket
+            </a>
+            
+            <a href="{% url 'ticket_list' %}" class="back">
+                &#8592; Volver a la Lista
+            </a>
+        </div>
+    </div>
+</body>
+</html>
